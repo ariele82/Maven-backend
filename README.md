@@ -23,9 +23,6 @@ backend/ # Parent project (multi-module pom.xml)
 │── webapp/ # WebApp module (web.xml, WAR packaging)
 └── sql/ # Database scripts
 
-yaml
-Copia codice
-
 ---
 
 ## ⚙️ Configuration  
