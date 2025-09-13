@@ -1,22 +1,32 @@
 -- =============================================
 -- Database: order_management
--- Descrizione: Schema per gestione ordini prodotti
--- Autore: [Il tuo nome]
--- Data: [Data corrente]
+-- Description: Schema for managing orders and products
+-- Author: oldm4n
+-- Date: future
 -- =============================================
 
--- Creazione database (eseguire manualmente in pgAdmin se necessario)
+-- Create database (execute manually in pgAdmin if necessary)
 -- CREATE DATABASE order_management;
 -- \c order_management;
 
--- Estensione per UUID
+-- Extension for UUID
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- =============================================
--- TABELLE
--- =============================================
 
--- Tabella Categorie
+
+-- =============================================
+-- TABLES
+-- =============================================
+-- Users table
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username TEXT NOT NULL UNIQUE,
+    password TEXT,
+    email TEXT NOT NULL UNIQUE,
+    phone TEXT,
+    role TEXT
+);
+-- Categories table
 CREATE TABLE IF NOT EXISTS categories (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
@@ -24,7 +34,7 @@ CREATE TABLE IF NOT EXISTS categories (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabella Prodotti
+-- Products table
 CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -37,7 +47,7 @@ CREATE TABLE IF NOT EXISTS products (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabella Clienti
+-- Customers table
 CREATE TABLE IF NOT EXISTS customers (
     id SERIAL PRIMARY KEY,
     uuid UUID UNIQUE DEFAULT uuid_generate_v4(),
@@ -48,7 +58,7 @@ CREATE TABLE IF NOT EXISTS customers (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabella Indirizzi
+-- Addresses table
 CREATE TABLE IF NOT EXISTS addresses (
     id SERIAL PRIMARY KEY,
     customer_id INT NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
@@ -59,7 +69,7 @@ CREATE TABLE IF NOT EXISTS addresses (
     is_default BOOLEAN DEFAULT FALSE
 );
 
--- Tabella Ordini
+-- Orders table
 CREATE TABLE IF NOT EXISTS orders (
     id SERIAL PRIMARY KEY,
     order_number VARCHAR(50) UNIQUE NOT NULL,
@@ -73,7 +83,7 @@ CREATE TABLE IF NOT EXISTS orders (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabella Dettagli Ordine
+-- Order Items table
 CREATE TABLE IF NOT EXISTS order_items (
     id SERIAL PRIMARY KEY,
     order_id INT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
@@ -84,7 +94,7 @@ CREATE TABLE IF NOT EXISTS order_items (
     subtotal DECIMAL(10,2) GENERATED ALWAYS AS (quantity * unit_price * (1 - discount/100)) STORED
 );
 
--- Tabella Stato Spedizioni
+-- Shipments table
 CREATE TABLE IF NOT EXISTS shipments (
     id SERIAL PRIMARY KEY,
     order_id INT UNIQUE NOT NULL REFERENCES orders(id),
@@ -96,7 +106,7 @@ CREATE TABLE IF NOT EXISTS shipments (
 );
 
 -- =============================================
--- INDICI
+-- INDEXES
 -- =============================================
 
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
@@ -110,7 +120,7 @@ CREATE INDEX IF NOT EXISTS idx_orders_date ON orders(order_date);
 CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(email);
 
 -- =============================================
--- VISTE
+-- VIEWS
 -- =============================================
 
 CREATE OR REPLACE VIEW order_summary AS
@@ -137,10 +147,10 @@ FROM products
 WHERE stock_quantity < 10;
 
 -- =============================================
--- FUNZIONI E TRIGGER
+-- FUNCTIONS AND TRIGGERS
 -- =============================================
 
--- Funzione per aggiornare timestamp
+-- Function to update timestamp
 CREATE OR REPLACE FUNCTION update_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -149,7 +159,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Funzione per generare numero ordine univoco
+-- Function to generate unique order number
 CREATE OR REPLACE FUNCTION generate_order_number()
 RETURNS VARCHAR AS $$
 DECLARE
@@ -165,7 +175,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Funzione per aggiornare totale ordine
+-- Function to update order total
 CREATE OR REPLACE FUNCTION update_order_total()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -181,7 +191,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Funzione per impostare numero ordine
+-- Function to set order number
 CREATE OR REPLACE FUNCTION set_order_number()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -192,95 +202,48 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Trigger per aggiornare timestamp prodotti
+-- Trigger to update product timestamps
 CREATE TRIGGER update_products_updated_at
 BEFORE UPDATE ON products
 FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
--- Trigger per aggiornare totale ordine
+-- Trigger to update order total
 CREATE TRIGGER update_order_total_trigger
 AFTER INSERT OR UPDATE OR DELETE ON order_items
 FOR EACH ROW EXECUTE FUNCTION update_order_total();
 
--- Trigger per generare numero ordine
+-- Trigger to generate order number
 CREATE TRIGGER set_order_number_trigger
 BEFORE INSERT ON orders
 FOR EACH ROW EXECUTE FUNCTION set_order_number();
 
 -- =============================================
--- DATI DI ESEMPIO
+-- SAMPLE DATA
 -- =============================================
 
--- Inserimento categorie
+-- Insert categories
 INSERT INTO categories (name, description) VALUES
-('Elettronica', 'Dispositivi elettronici'),
-('Abbigliamento', 'Vestiti e accessori'),
-('Casa', 'Articoli per la casa');
+('Electronics', 'Electronic devices'),
+('Clothing', 'Clothes and accessories'),
+('Home', 'Household items');
 
--- Inserimento prodotti
+-- Insert products
 INSERT INTO products (name, description, price, stock_quantity, category_id, sku) VALUES
-('Laptop Pro', 'Laptop 15" 16GB RAM', 1299.99, 25, 1, 'LP001'),
+('Laptop Pro', '15" Laptop 16GB RAM', 1299.99, 25, 1, 'LP001'),
 ('Smartphone X', '5G, 128GB', 799.99, 50, 1, 'SP001'),
-('T-Shirt', 'Cotone 100%', 19.99, 200, 2, 'TS001'),
-('Caffettiera', 'Automatica', 49.99, 30, 3, 'CF001');
+('T-Shirt', '100% Cotton', 19.99, 200, 2, 'TS001'),
+('Coffee Maker', 'Automatic', 49.99, 30, 3, 'CF001');
 
--- Inserimento clienti
+-- Insert customers
 INSERT INTO customers (first_name, last_name, email, phone) VALUES
 ('Mario', 'Rossi', 'mario.rossi@email.com', '3331234567'),
 ('Laura', 'Bianchi', 'laura.bianchi@email.com', '3449876543');
 
--- Inserimento indirizzi
+-- Insert addresses
 INSERT INTO addresses (customer_id, street, city, postal_code, country, is_default) VALUES
-(1, 'Via Roma 10', 'Milano', '20121', 'Italia', TRUE),
-(2, 'Corso Italia 5', 'Roma', '00100', 'Italia', TRUE);
+(1, 'Via Roma 10', 'Milan', '20121', 'Italy', TRUE),
+(2, 'Corso Italia 5', 'Rome', '00100', 'Italy', TRUE);
 
--- Inserimento ordini (con trigger per numero ordine)
+-- Insert orders (with trigger for order number)
 INSERT INTO orders (customer_id, total_amount, status, shipping_address_id) VALUES
-(1, 0, 'PROCESSING', 1),
-(2, 0, 'PENDING', 2);
-
--- Inserimento dettagli ordine
-INSERT INTO order_items (order_id, product_id, quantity, unit_price, discount) VALUES
-(1, 1, 1, 1299.99, 5.00),  -- Laptop con 5% sconto
-(1, 3, 2, 19.99, 0),       -- 2 T-Shirt
-(2, 2, 1, 799.99, 10.00);  -- Smartphone con 10% sconto
-
--- =============================================
--- QUERY DI ESEMPIO
--- =============================================
-
--- Riepilogo ordini con dettagli cliente
--- SELECT * FROM order_summary;
-
--- Prodotti più venduti
--- SELECT 
---     p.name,
---     SUM(oi.quantity) AS total_sold,
---     SUM(oi.subtotal) AS revenue
--- FROM order_items oi
--- JOIN products p ON oi.product_id = p.id
--- GROUP BY p.id
--- ORDER BY total_sold DESC
--- LIMIT 5;
-
--- Stato spedizioni
--- SELECT 
---     o.order_number,
---     s.status,
---     s.shipped_at,
---     s.estimated_delivery
--- FROM orders o
--- LEFT JOIN shipments s ON o.id = s.order_id
--- WHERE o.status = 'SHIPPED';
-
--- Clienti con più ordini
--- SELECT 
---     CONCAT(c.first_name, ' ', c.last_name) AS customer,
---     COUNT(o.id) AS order_count,
---     SUM(o.total_amount) AS total_spent
--- FROM customers c
--- JOIN orders o ON c.id = o.customer_id
--- GROUP BY c.id
--- ORDER BY order_count DESC;
-
--- Fine script
+(1, 0, 'PROCESSING
