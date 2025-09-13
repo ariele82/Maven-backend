@@ -25,7 +25,7 @@ public class UserRepository {
                 user.setPhone(rs.getString("phone"));
                 user.setRole(rs.getString("role"));
                 user.setActive(rs.getBoolean("is_active"));
-                user.setEncryptedPassword(rs.getString("rsa_public_key"));
+                user.setEncryptedPassword(rs.getString("password"));
                 
                 if (user.checkPassword(password)) {
                     return user;
@@ -39,7 +39,7 @@ public class UserRepository {
     }
     
     public String registerUser(String username, String password, String role) {
-        String sql = "INSERT INTO users (username, rsa_public_key, ruolo) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO users (username, password, ruolo) VALUES (?, ?, ?)";
         
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
