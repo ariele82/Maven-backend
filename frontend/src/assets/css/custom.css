@@ -1,0 +1,91 @@
+/* Layout principale */
+.auth-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.auth-left {
+  flex: 1;
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.auth-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: white;
+}
+
+/* Sezione tutorial */
+.tutorial-header {
+  margin-bottom: 3rem;
+}
+
+.tutorial-header h1 {
+  color: #6c63ff;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.tutorial-header p {
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+.tutorial-content {
+  text-align: center;
+}
+
+.rocket-placeholder {
+  background-color: #ffd6e8;
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2rem;
+  color: #ff6b9d;
+}
+
+.tutorial-text h2 {
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.tutorial-text p {
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+/* Form */
+.signup-form {
+  width: 100%;
+  max-width: 400px;
+}
+
+.social-login {
+  margin-top: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .auth-container {
+    flex-direction: column;
+  }
+  
+  .auth-left {
+    padding: 2rem 1rem;
+  }
+  
+  .auth-right {
+    padding: 2rem 1rem;
+  }
+}
