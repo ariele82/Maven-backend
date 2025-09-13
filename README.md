@@ -37,7 +37,7 @@ Configuration is **external** and must be placed in:
   db.url=jdbc:postgresql://localhost:5432/mydb
   db.username=postgres
   db.password=postgres
-  registration.enabled=true ---this is for enable and disable user registrazion i use it for create admin user.
+  registration.enabled=true ---this is for enable and disable user registration, i use it for create admin user.
 encryption.properties → encryption keys & algorithm
 
 properties
