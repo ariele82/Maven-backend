@@ -37,6 +37,7 @@ Configuration is **external** and must be placed in:
   db.url=jdbc:postgresql://localhost:5432/mydb
   db.username=postgres
   db.password=postgres
+  registration.enabled=true ---this is for enable and disable user registrazion i use it for create admin user.
 encryption.properties → encryption keys & algorithm
 
 properties
@@ -45,6 +46,23 @@ encryption.key=mySuperSecretKey
 encryption.algorithm=AES
 👉 Alternatively, you can update AppConfig and EncryptionUtil to change the file paths.
 
+Register an admin user:
+Use POST /api/register/user
+Enter username: "admin", password: "password123"
+
+Log in:
+Use POST /api/auth/login
+The token will be automatically saved in the variable {{token}}
+
+Test protected APIs:
+Use the categories, products, and orders APIs
+Each request will automatically extend the token’s lifetime by 15 minutes
+
+Register additional users (if needed):
+Use POST /api/register/user to create operators
+
+Delete test users:
+Use DELETE /api/register/user/{username} to clean the database
 🗄️ Database
 The schema and sample tables are provided in:
 📄 create_database.sql
