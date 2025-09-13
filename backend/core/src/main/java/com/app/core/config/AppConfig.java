@@ -13,7 +13,9 @@ public class AppConfig {
             throw new RuntimeException("Config file not found!", e);
         }
     }
-    
+    public static boolean isRegistrationEnabled() {
+    return Boolean.parseBoolean(props.getProperty("registration.enabled", "false"));
+}
     public static String getDbUrl() {
         return props.getProperty("db.url");
     }
