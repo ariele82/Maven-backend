@@ -90,7 +90,7 @@ export default {
 
 .animate__slideInRight {
   animation-name: slideInRight;
-  animation-duration: 1.5s;
+  animation-duration: 2.5s;
   animation-fill-mode: both;
   animation-timing-function: ease-out;
 }

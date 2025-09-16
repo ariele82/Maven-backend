@@ -39,6 +39,19 @@ export default {
 </script>
 
 <style>
+@font-face {
+  font-family: 'Miedinger';
+  src: url('@/assets/fonts/Miedinger_Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Miedinger';
+  src: url('@/assets/fonts/MiedingerLight.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 /* Stili globali per sovrascrivere Bootstrap */
 .custom-navbar .navbar-nav .nav-link {
   color: #F5F5F5 !important;
@@ -47,6 +60,9 @@ export default {
   margin: 0 0.2rem;
   border-radius: 4px;
   position: relative;
+   font-family: 'Miedinger', sans-serif; /* Font di base per la sidebar */
+    font-size: 0.6rem; /* MODIFICA QUI: 16px (1rem = 16px) */
+    font-weight: bold; /* MODIFICA QUI: Usa il font bold per i pulsanti */
 }
 
 .custom-navbar .navbar-nav .nav-link:hover,
