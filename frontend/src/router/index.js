@@ -5,6 +5,11 @@ const routes = [
     path: '/',
     name: 'Home',
     component: () => import('../views/HomeView.vue')
+  },
+  {
+    path: '/example',
+    name: 'example',
+    component: () => import('../views/ExampleView.vue')
   }
   // Altre rotte verranno aggiunte dopo
 ]

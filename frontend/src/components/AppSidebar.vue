@@ -25,6 +25,7 @@
           class="try-btn rounded px-4"
           variant="outline-primary"
           style="border-color: #059BAD; color: #059BAD;"
+           @click="goToExample"
         >
           Try example
         </b-button>
@@ -48,6 +49,9 @@ export default {
     },
     handleVisible(isVisible) {
       this.isVisible = isVisible;
+    },
+     goToExample() {
+      this.$router.push('/example')
     }
   },
   mounted() {
